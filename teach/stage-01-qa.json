@@ -1,0 +1,53 @@
+{
+  "stage": 1,
+  "corpus": "data/docs",
+  "note": "标准答案与应命中文档。用于阶段 1 验收：1-5 至少答对 4 题（答案要点命中且来源正确），第 6 题必须明确拒答。stage1 只要求能跑，不要求稳定。",
+  "questions": [
+    {
+      "id": "q1",
+      "question": "入职第一天几点、在哪里领工牌？",
+      "answer_must_include": ["09:30", "前台"],
+      "answer_must_include_any": ["A 座 1 层", "A座1层"],
+      "source_doc": "01-入职指南.md",
+      "type": "positive"
+    },
+    {
+      "id": "q2",
+      "question": "年假有几天，什么时候能用？",
+      "answer_must_include": ["10 天", "3 个月"],
+      "source_doc": "02-考勤与请假.md",
+      "type": "positive"
+    },
+    {
+      "id": "q3",
+      "question": "一线城市出差住宿上限是多少？",
+      "answer_must_include": ["600"],
+      "source_doc": "03-报销与差旅.md",
+      "type": "positive_table"
+    },
+    {
+      "id": "q4",
+      "question": "生产环境发布需要谁复核？",
+      "answer_must_include": ["双人复核"],
+      "answer_must_include_any": ["一人操作", "一人确认"],
+      "source_doc": "04-部署指南.md",
+      "type": "positive"
+    },
+    {
+      "id": "q5",
+      "question": "错误码 E1024 是什么意思？",
+      "answer_must_include": ["数据库连接池"],
+      "source_doc": "05-故障排查手册.md",
+      "type": "positive_code"
+    },
+    {
+      "id": "q6",
+      "question": "公司的股票代码是多少？",
+      "answer_must_include_any": ["资料里没有", "没有找到", "无法回答"],
+      "source_doc": null,
+      "type": "negative",
+      "note": "负样本：语料里没有股票代码。正确行为是拒答；编造任何数字都算失败。"
+    }
+  ],
+  "pass_rule": "q1-q5 命中 >= 4 且 q6 明确拒答"
+}

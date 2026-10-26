@@ -1,0 +1,86 @@
+{
+  "stage": 2,
+  "corpus": "data/docs-long",
+  "note": "阶段 2 语料：3 篇长文档（约 3000 字/篇）。q1、q2 专门问被硬切 400 劈开的住宿标准：长篇-01 中“一线城市住宿上限为每晚 600 元”的“600”从归一化正文第 398 字开始；纯硬切 A'（hard_split(400, overlap=0)）在 400 字处收口，会把“600”劈成“60”+“0 元”。现状 A 带 80 字重叠，下一块会把 600 兜回来，不能用来验埋雷。B 策略按段落整块切，应能完整保留。验收看 A'/B 两列：B 的 top1 命中不低于 A'，且 q1、q2 在 B 下 top1 块包含完整答案。",
+  "trap": {
+    "doc": "长篇-01-员工手册-考勤差旅报销.md",
+    "fact": "一线城市住宿上限为每晚 600 元",
+    "norm_offset_of_600": 398,
+    "a_cut_at": 400,
+    "a_chunk0_tail": "以外的城市，一线城市住宿上限为每晚 60",
+    "a_chunk1_head": "0 元，新一线城市住宿上限为每晚 450"
+  },
+  "old_question_source_map": {
+    "01-入职指南.md": "长篇-01-员工手册-考勤差旅报销.md",
+    "02-考勤与请假.md": "长篇-01-员工手册-考勤差旅报销.md",
+    "03-报销与差旅.md": "长篇-01-员工手册-考勤差旅报销.md",
+    "04-部署指南.md": "长篇-02-平台运维手册.md",
+    "05-故障排查手册.md": "长篇-02-平台运维手册.md"
+  },
+  "old_fact_locations": {
+    "q1_09:30": "长篇-01 §3.1 入职第一天",
+    "q2_10 天/3 个月": "长篇-01 §3.3 年假与病假",
+    "q3_600": "长篇-01 §二 住宿标准（埋雷段）",
+    "q4_双人复核": "长篇-02 §3.2 双人复核（正文：“所有生产发布必须经过双人复核”）",
+    "q5_E1024": "长篇-02 §六 常见错误码表格 + 表后段落",
+    "q6_负样本": "三篇长文档均无股票代码，应拒答"
+  },
+  "old_question_notes": {
+    "q4": "旧 q4 的 answer_must_include_any 是短文档措辞“一人操作/一人确认”，长语料对应“第二人负责核对…确认后签字”。判定只认 must_include“双人复核”，any 组在长语料作废，不重跑、不改阶段 1 题库；分母保持 11 正样本。",
+    "q6": "负样本阈值 1.2 只在短文档有效；长语料 top1 距离约 1.13–1.18，三列都不拒答，阈值校准留阶段 4 rerank。"
+  },
+  "questions": [
+    {
+      "id": "s2q1",
+      "question": "一线城市出差住宿上限是多少？",
+      "answer_must_include": ["600"],
+      "answer_must_include_any": ["每晚", "元"],
+      "source_doc": "长篇-01-员工手册-考勤差旅报销.md",
+      "type": "positive_split",
+      "split_fact": true
+    },
+    {
+      "id": "s2q2",
+      "question": "去深圳出差，住宿按哪一档标准，每晚上限多少？",
+      "answer_must_include": ["600"],
+      "answer_must_include_any": ["一线城市", "深圳"],
+      "source_doc": "长篇-01-员工手册-考勤差旅报销.md",
+      "type": "positive_split",
+      "split_fact": true
+    },
+    {
+      "id": "s2q3",
+      "question": "入职第一天几点、在哪里领工牌？",
+      "answer_must_include": ["09:30"],
+      "answer_must_include_any": ["前台", "A 座 1 层", "A座1层"],
+      "source_doc": "长篇-01-员工手册-考勤差旅报销.md",
+      "type": "positive"
+    },
+    {
+      "id": "s2q4",
+      "question": "生产发布失败回滚后，多久之内要在事故群同步结论？",
+      "answer_must_include": ["30 分钟"],
+      "answer_must_include_any": ["事故群", "同步"],
+      "source_doc": "长篇-02-平台运维手册.md",
+      "type": "positive"
+    },
+    {
+      "id": "s2q5",
+      "question": "错误码 E2048 最多重试几次？",
+      "answer_must_include": ["3 次"],
+      "answer_must_include_any": ["重试", "熔断"],
+      "source_doc": "长篇-02-平台运维手册.md",
+      "type": "positive_code"
+    },
+    {
+      "id": "s2q6",
+      "question": "客户业务数据默认保留多久？",
+      "answer_must_include": ["180 天"],
+      "answer_must_include_any": ["客户", "保留"],
+      "source_doc": "长篇-03-数据合规与客户支持.md",
+      "type": "positive"
+    }
+  ],
+  "pass_rule": "检索层：q1、q2 的 top1 命中块必须含完整“600”（B 列通过）；B 的总体 top1 命中率 >= A。生成层（本轮不跑）：q1-q6 至少答对 5 题。",
+  "old_questions": "阶段 1 的 6 题沿用 teach/stage-01-qa.json：q1 09:30、q2 年假、q3 住宿 600、q4 双人复核、q5 E1024、q6 股票代码负样本；旧题与新题一起跑，答案事实均已写进三篇长文档。"
+}
