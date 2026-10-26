@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+.cache/
+runtime.local.json
+data/index/**
+!data/index/.gitkeep
