@@ -1,4 +1,4 @@
-"""Minimal OpenAI-compatible chat server backed by a local HF model (CPU).
+r"""Minimal OpenAI-compatible chat server backed by a local HF model (CPU).
 
 Serves POST /v1/chat/completions and GET /v1/models on 127.0.0.1:11434 so that
 src/ask.py (openai client, base_url http://127.0.0.1:11434/v1) can talk to it
@@ -158,3 +158,4 @@ if __name__ == "__main__":
     load(args.model, args.dtype)
     print(f"[server] listening on http://127.0.0.1:{args.port}/v1", flush=True)
     uvicorn.run(app, host="127.0.0.1", port=args.port, log_level="warning")
+
